@@ -1,0 +1,74 @@
+<?php
+
+function materials_schelduer_save_workaround($node)
+{
+    $TingMaterials = array();
+    if(isset($node))
+    {
+      $PropertyName = null;
+      foreach($node as $Property => $Value)
+      {
+          if (strpos($Property, '_materials') !== FALSE)
+          {
+              $PropertyName = $Property;
+              break;
+          }
+      }
+      if($PropertyName != null)
+      {
+          if(sizeof($node->$PropertyName) != 0)
+          {
+              $Data = $node->$PropertyName; // needed as we cant implicit reference members with dynamic property.
+              foreach($Data["und"] as $Materials)
+              {
+                    //sanity check. if 0 or not set. break.
+                if(!isset($Materials['value']->endpoints["und"]) && sizeof($Materials['value']->endpoints["und"]) != 0)
+                {
+                    break;
+                }
+                foreach($Materials['value']->endpoints["und"] as $endpoint)
+                {
+                    if($endpoint["entity_type"] == "ting_object")
+                    {
+                        //Load Materials obj.
+                        $Entityid = $endpoint["entity_id"];
+                        $TingMaterial = entity_load("ting_object",array($Entityid) );
+
+                        //Create replacement structure for ting_reference.
+                        $container = array();
+                        $container["tid"] = $TingMaterial[$Entityid]->tid;
+                        $container["object"] = $TingMaterial[$Entityid];
+                        $container["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
+       
+                 array_push($TingMaterials,$container);
+                    }
+                }
+              }
+          }
+      }
+      
+    }
+ 
+    return $TingMaterials;
+}
+function materials_schelduer_scheduler_api($n,$action){
+    if($action == "pre_publish")
+    {
+        $PropertyName = null;
+        foreach($n as $Property => $Value)
+          {
+              if (strpos($Property, '_materials') !== FALSE)
+              {
+                  $PropertyName = $Property;
+                  break;
+              }
+          }
+        if($PropertyName != null)
+        {
+            $reference = $n->$PropertyName; // php doesent handle direct asignment to dynamic properties very well.
+            $reference["und"] = materials_schelduer_save_workaround($n);
+            $n->$PropertyName = $reference;
+
+        }
+    }
+}

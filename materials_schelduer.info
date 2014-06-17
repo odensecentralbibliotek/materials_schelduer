@@ -1,0 +1,6 @@
+name = materials_schelduer
+description = Fixer problemer med at schedulere news med materialer.
+core = 7.x
+package = Other
+dependencies[] = scheduler
+
