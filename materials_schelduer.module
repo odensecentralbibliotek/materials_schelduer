@@ -34,7 +34,11 @@ function materials_schelduer_save_workaround($node)
                         $Entityid = $endpoint["entity_id"];
                         $TingMaterial = entity_load("ting_object",array($Entityid) );
 
-                        //Create replacement structure for ting_reference.
+                        /*
+                        * Create replacement structure for ting_reference.
+                         * Issues: $container["object"] is only neeeded in certain versions.
+                         * Need to verify for new platforms if needed or not.
+                        */
                         $container = array();
                         $container["tid"] = $TingMaterial[$Entityid]->tid;
                         $container["object"] = $TingMaterial[$Entityid];
@@ -56,13 +60,13 @@ function materials_schelduer_scheduler_api($n,$action){
     {
         $PropertyName = null;
         foreach($n as $Property => $Value)
-          {
-              if (strpos($Property, '_materials') !== FALSE)
-              {
-                  $PropertyName = $Property;
-                  break;
-              }
-          }
+        {
+            if (strpos($Property, '_materials') !== FALSE)
+            {
+              $PropertyName = $Property;
+              break;
+            }
+        }
         if($PropertyName != null)
         {
             $reference = $n->$PropertyName; // php doesent handle direct asignment to dynamic properties very well.
