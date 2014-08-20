@@ -9,7 +9,7 @@ function materials_schelduer_save_workaround($node)
       foreach($node as $Property => $Value)
       {
           if (strpos($Property, '_materials') !== FALSE)
-          {
+          { 
               $PropertyName = $Property;
               break;
           }
@@ -44,7 +44,7 @@ function materials_schelduer_save_workaround($node)
                         $container["object"] = $TingMaterial[$Entityid];
                         $container["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
        
-                 array_push($TingMaterials,$container);
+                        array_push($TingMaterials,$container);
                     }
                 }
               }
@@ -56,7 +56,7 @@ function materials_schelduer_save_workaround($node)
     return $TingMaterials;
 }
 function materials_schelduer_scheduler_api($n,$action){
-    if($action == "pre_publish")
+    if($action == "pre_publish" || $action == "pre_unpublish")
     {
         $PropertyName = null;
         foreach($n as $Property => $Value)
