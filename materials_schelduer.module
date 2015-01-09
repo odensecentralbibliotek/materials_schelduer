@@ -39,18 +39,20 @@ function materials_schelduer_save_workaround($node)
                          * Issues: $container["object"] is only neeeded in certain versions.
                          * Need to verify for new platforms if needed or not.
                         */
-                        $container = array();
-                        $container["tid"] = $TingMaterial[$Entityid]->tid;
-                        $container["object"] = $TingMaterial[$Entityid];
-                        $container["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
-       
-                        array_push($TingMaterials,$container);
+                        if(sizeof($TingMaterial) != 0)
+                        {
+                            $container = array();
+                            $container["tid"] = $TingMaterial[$Entityid]->tid;
+                            $container["object"] = $TingMaterial[$Entityid];
+                            $container["ting_object_id"] = $TingMaterial[$Entityid]->ding_entity_id;
+
+                            array_push($TingMaterials,$container);
+                        }
                     }
                 }
               }
           }
       }
-      
     }
  
     return $TingMaterials;
